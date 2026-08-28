@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: payment-processor
+
+  # Local/dev datasource: in-memory H2 running in Oracle compatibility
+  # mode, so the existing SQL (e.g. SYSTIMESTAMP) works unchanged.
+  # schema.sql / data.sql (in this same folder) are applied automatically
+  # on startup. In real environments this is replaced by the actual
+  # Oracle connection.
+  datasource:
+    url: jdbc:h2:mem:paymentsdb;MODE=Oracle;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: payment-processor-group
+      auto-offset-reset: earliest
+
+risk-service:
+  base-url: http://risk-service:8080

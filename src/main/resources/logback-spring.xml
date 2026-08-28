@@ -1,0 +1,28 @@
+<configuration>
+
+    <!--
+        Custom log format so every line carries the fields used across
+        the platform (service, class, method, correlationId,
+        transactionId) without each log statement having to pass them
+        explicitly:
+
+          - class / method come from Logback's caller data (%C{1} / %M).
+            Note: capturing caller data has a real (if small) runtime
+            cost, since Logback has to inspect the stack trace for every
+            log line. Acceptable here; worth knowing before doing this
+            in a high-throughput production logger.
+          - correlationId / transactionId come from MDC, populated by
+            PaymentEventConsumer for the duration of each message being
+            processed.
+    -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{yyyy-MM-dd'T'HH:mm:ss.SSS'Z', UTC} level=%level service=payment-processor class=%C{1} method=%M correlationId=%X{correlationId:--} transactionId=%X{transactionId:--} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
